@@ -392,8 +392,7 @@ static int add_parents_to_list(git_revwalk *walk, git_commit_list_node *commit, 
 			git_commit_list_node *p = commit->parents[i];
 			p->uninteresting = 1;
 
-			/* git does it gently here, but we don't like missing objects */
-			if ((error = git_commit_list_parse(walk, p)) < 0)
+			if ((error = git_commit_list_parse(walk, p)) < 0 && error != GIT_ENOTFOUND)
 				return error;
 
 			if (p->parents)
