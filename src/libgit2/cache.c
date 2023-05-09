@@ -43,6 +43,8 @@ int git_cache_set_max_object_size(git_object_t type, size_t size)
 
 int git_cache_init(git_cache *cache)
 {
+	if (!git_cache__enabled) return 0;
+
 	memset(cache, 0, sizeof(*cache));
 
 	if ((git_oidmap_new(&cache->map)) < 0)
@@ -59,6 +61,7 @@ int git_cache_init(git_cache *cache)
 /* called with lock */
 static void clear_cache(git_cache *cache)
 {
+	if (!git_cache__enabled) return;
 	git_cached_obj *evict = NULL;
 
 	if (git_cache_size(cache) == 0)
@@ -75,6 +78,7 @@ static void clear_cache(git_cache *cache)
 
 void git_cache_clear(git_cache *cache)
 {
+	if (!git_cache__enabled) return;
 	if (git_rwlock_wrlock(&cache->lock) < 0)
 		return;
 
@@ -85,6 +89,7 @@ void git_cache_clear(git_cache *cache)
 
 void git_cache_dispose(git_cache *cache)
 {
+	if (!git_cache__enabled) return;
 	git_cache_clear(cache);
 	git_oidmap_free(cache->map);
 	git_rwlock_free(&cache->lock);
@@ -94,6 +99,7 @@ void git_cache_dispose(git_cache *cache)
 /* Called with lock */
 static void cache_evict_entries(git_cache *cache)
 {
+	if (!git_cache__enabled) return;
 	size_t evict_count = git_cache_size(cache) / 2048, i;
 	ssize_t evicted_memory = 0;
 
@@ -126,12 +132,14 @@ static void cache_evict_entries(git_cache *cache)
 
 static bool cache_should_store(git_object_t object_type, size_t object_size)
 {
+	if (!git_cache__enabled) return false;
 	size_t max_size = git_cache__max_object_size[object_type];
 	return git_cache__enabled && object_size < max_size;
 }
 
 static void *cache_get(git_cache *cache, const git_oid *oid, unsigned int flags)
 {
+	if (!git_cache__enabled) return NULL;
 	git_cached_obj *entry;
 
 	if (!git_cache__enabled || git_rwlock_rdlock(&cache->lock) < 0)
