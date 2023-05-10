@@ -759,7 +759,8 @@ int git_packfile_unpack(
 		GIT_ERROR_CHECK_ALLOC(obj->data);
 
 		memcpy(obj->data, data, obj->len + 1);
-		git_atomic32_dec(&cached->refcount);
+		git_cached_obj_decref(&cached);
+		cached = NULL;
 		goto cleanup;
 	}
 
@@ -807,7 +808,7 @@ int git_packfile_unpack(
 		}
 
 		if (cached) {
-			git_atomic32_dec(&cached->refcount);
+			git_cached_obj_decref(&cached);
 			cached = NULL;
 		}
 
@@ -821,7 +822,7 @@ cleanup:
 	if (error < 0) {
 		git__free(obj->data);
 		if (cached)
-			git_atomic32_dec(&cached->refcount);
+			git_cached_obj_decref(&cached);
 	}
 
 	if (elem)
