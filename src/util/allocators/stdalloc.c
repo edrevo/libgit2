@@ -6,6 +6,7 @@
  */
 
 #include "stdalloc.h"
+#include <include/jemalloc/jemalloc.h>
 
 static void *stdalloc__malloc(size_t len, const char *file, int line)
 {
