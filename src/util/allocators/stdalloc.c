@@ -13,7 +13,7 @@ static void *stdalloc__malloc(size_t len, const char *file, int line)
 	GIT_UNUSED(file);
 	GIT_UNUSED(line);
 
-	return malloc(len);
+	return _rjem_malloc(len);
 }
 
 static void *stdalloc__realloc(void *ptr, size_t size, const char *file, int line)
@@ -21,12 +21,12 @@ static void *stdalloc__realloc(void *ptr, size_t size, const char *file, int lin
 	GIT_UNUSED(file);
 	GIT_UNUSED(line);
 
-	return realloc(ptr, size);
+	return _rjem_realloc(ptr, size);
 }
 
 static void stdalloc__free(void *ptr)
 {
-	free(ptr);
+	_rjem_free(ptr);
 }
 
 int git_stdalloc_init_allocator(git_allocator *allocator)

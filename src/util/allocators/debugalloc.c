@@ -9,12 +9,12 @@
 
 void *je_malloc_wrapper(size_t size, const char *file, int line)
 {
-    return malloc(size);
+    return _rjem_malloc(size);
 }
 
 void *je_realloc_wrapper(void *ptr, size_t size, const char *file, int line)
 {
-    return realloc(ptr, size);
+    return _rjem_realloc(ptr, size);
 }
 
 int git_debugalloc_init_allocator(git_allocator *allocator)
@@ -22,6 +22,6 @@ int git_debugalloc_init_allocator(git_allocator *allocator)
 	// Setup jemalloc
 	allocator->gmalloc = je_malloc_wrapper;
 	allocator->grealloc = je_realloc_wrapper;
-	allocator->gfree = free;
+	allocator->gfree = _rjem_free;
 	return 0;
 }
