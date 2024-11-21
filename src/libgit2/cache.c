@@ -41,7 +41,7 @@ int git_cache_set_max_object_size(git_object_t type, size_t size)
 	return 0;
 }
 
-int git_mwindow_print_stats() {
+int git_cache_print_stats() {
 	fprintf(stderr, "CACHE STATS\n");
 	fprintf(stderr, "  current storage: %lld\n", git_cache__current_storage.val);
 	return 0;
