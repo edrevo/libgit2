@@ -54,4 +54,6 @@ int git_mwindow_get_pack(
 	git_oid_t oid_type);
 int git_mwindow_put_pack(struct git_pack_file *pack);
 
+int git_mwindow_print_stats();
+
 #endif

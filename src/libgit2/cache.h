@@ -46,6 +46,8 @@ int git_cache_init(git_cache *cache);
 void git_cache_dispose(git_cache *cache);
 void git_cache_clear(git_cache *cache);
 
+int git_cache_print_stats();
+
 void *git_cache_store_raw(git_cache *cache, git_odb_object *entry);
 void *git_cache_store_parsed(git_cache *cache, git_object *entry);
 

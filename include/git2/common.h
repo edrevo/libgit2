@@ -179,6 +179,8 @@ typedef enum {
  */
 GIT_EXTERN(int) git_libgit2_features(void);
 
+GIT_EXTERN(int) git_libgit2_print_memstats(void);
+
 /**
  * Global library options
  *

@@ -95,3 +95,11 @@ int git_libgit2_features(void)
 #endif
 	;
 }
+
+int git_libgit2_print_memstats(void)
+{
+	fprintf(stderr, "Memory allocation statistics:\n");
+	git_mwindow_print_stats();
+	git_mwindow_print_stats();
+	return 0;
+}

@@ -61,6 +61,45 @@ int git_mwindow_global_init(void)
 	return git_runtime_shutdown_register(git_mwindow_global_shutdown);
 }
 
+int git_mwindow_print_stats()
+{
+	int error;
+	if ((error = git_mutex_init(&git_mwindow__mutex)) < 0)
+	    return error;
+
+	git_mwindow_ctl *ctl = &git_mwindow__mem_ctl;
+
+	fprintf(stderr, "MWINDOW STATS\n");
+
+	fprintf(stderr, "mwindow: mapped %zu, open_windows %u, mmap_calls %u\n",
+		ctl->mapped, ctl->open_windows, ctl->mmap_calls);
+	fprintf(stderr, "mwindow: peak_mapped %zu, peak_open_windows %u\n",
+		ctl->peak_mapped, ctl->peak_open_windows);
+
+	git_mwindow_file *mwf;
+	size_t i;
+	char *linkname;
+	linkname = malloc(1024);
+	for (i = 0; i < ctl->windowfiles.length; ++i){
+		mwf = git_vector_get(&ctl->windowfiles, i);
+		struct stat st;
+		fstat(mwf->fd, &st);
+
+		snprintf(linkname, 1024, "/proc/self/fd/%d", mwf->fd);
+		readlink(linkname, linkname, 1024);
+		fprintf(stderr, "mwindow: file %d (%s), size %lld\n", mwf->fd, linkname, mwf->size);
+
+		git_mwindow *w;
+		for (w = mwf->windows; w; w = w->next) {
+			fprintf(stderr, "\tmwindow: offset %lld, len %zu, last_used %zu, inuse_cnt %zu\n",
+				w->offset, w->window_map.len, w->last_used, w->inuse_cnt);
+		}
+	}
+	free(linkname);
+
+	return 0;
+}
+
 int git_mwindow_get_pack(
 	struct git_pack_file **out,
 	const char *path,
