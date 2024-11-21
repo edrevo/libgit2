@@ -64,7 +64,7 @@ int git_mwindow_global_init(void)
 int git_mwindow_print_stats()
 {
 	int error;
-	if ((error = git_mutex_init(&git_mwindow__mutex)) < 0)
+	if ((error = git_mutex_init(&git__mwindow_mutex)) < 0)
 	    return error;
 
 	git_mwindow_ctl *ctl = &git_mwindow__mem_ctl;
@@ -96,6 +96,7 @@ int git_mwindow_print_stats()
 		}
 	}
 	free(linkname);
+	git_mutex_unlock(&git__mwindow_mutex);
 
 	return 0;
 }
